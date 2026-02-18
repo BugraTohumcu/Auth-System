@@ -1,5 +1,6 @@
 package com.bugra.security;
 
+import com.bugra.enums.EndPoints;
 import com.bugra.service.JwtService;
 import com.bugra.service.UserDetailsServiceImp;
 import com.bugra.enums.Token;
@@ -34,7 +35,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
             String path = request.getRequestURI();
-            if(path.startsWith("/auth/login") || path.startsWith("/auth/register")){
+            if(path.startsWith(EndPoints.LOGIN.getPath()) || path.startsWith(EndPoints.REGISTER.getPath())){
                 filterChain.doFilter(request,response);
                 return;
             }
