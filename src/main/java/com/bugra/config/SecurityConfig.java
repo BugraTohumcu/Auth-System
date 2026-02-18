@@ -1,5 +1,6 @@
 package com.bugra.config;
 
+import com.bugra.enums.EndPoints;
 import com.bugra.filter.LoginRateLimiter;
 import com.bugra.security.JwtEntryPoint;
 import com.bugra.security.JwtErrorFilter;
@@ -72,7 +73,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request ->
                         request
                                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers("/auth/login","/auth/register", "/auth/refresh_token").permitAll()
+                                .requestMatchers(EndPoints.LOGIN.getPath(),
+                                        EndPoints.REGISTER.getPath(),
+                                        EndPoints.REFRESH.getPath()).permitAll()
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtEntryPoint))
