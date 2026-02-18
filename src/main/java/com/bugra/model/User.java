@@ -1,6 +1,6 @@
 package com.bugra.model;
 
-import com.bugra.types.Role;
+import com.bugra.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

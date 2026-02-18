@@ -1,4 +1,4 @@
-package com.bugra.types;
+package com.bugra.enums;
 
 public enum Role {
     User("USER"),

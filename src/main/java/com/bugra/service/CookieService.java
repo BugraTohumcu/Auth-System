@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.Arrays;
 
-import static com.bugra.types.Token.access_token;
+import static com.bugra.enums.Token.access_token;
 
 @Service
 public class CookieService {

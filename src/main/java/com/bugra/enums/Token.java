@@ -1,4 +1,4 @@
-package com.bugra.types;
+package com.bugra.enums;
 
 public enum Token {
     access_token("access_token"),

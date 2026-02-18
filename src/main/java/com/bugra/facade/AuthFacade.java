@@ -3,7 +3,7 @@ package com.bugra.facade;
 import com.bugra.model.User;
 import com.bugra.security.dto.TokenPayload;
 import com.bugra.service.JwtService;
-import com.bugra.types.Token;
+import com.bugra.enums.Token;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 

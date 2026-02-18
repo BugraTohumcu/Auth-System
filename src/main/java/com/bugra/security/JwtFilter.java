@@ -2,7 +2,7 @@ package com.bugra.security;
 
 import com.bugra.service.JwtService;
 import com.bugra.service.UserDetailsServiceImp;
-import com.bugra.types.Token;
+import com.bugra.enums.Token;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
