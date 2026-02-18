@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ResponsePattern<UserResponse>> handleException(UsernameNotFoundException e){
         logger.error(e.getMessage());
-        return ResponseEntity.status(HttpStatus.CONFLICT)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ResponsePattern<>(e.getMessage(),null,false));
     }
     @ExceptionHandler(Exception.class)

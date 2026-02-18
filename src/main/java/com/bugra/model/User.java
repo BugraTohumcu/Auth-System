@@ -25,11 +25,18 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
+    @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
     @Column(nullable = false)
     private boolean deleted;
+
     @Column(nullable = false)
     private boolean enabled;
 
@@ -38,6 +45,7 @@ public class User {
 
     @CreatedDate
     private Date createdAt;
+
     @LastModifiedDate
     private Date updatedAt;
 
@@ -47,7 +55,6 @@ public class User {
             this.role = Role.User;
         }
     }
-
 
     //Relations
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

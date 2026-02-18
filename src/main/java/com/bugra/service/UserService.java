@@ -2,10 +2,8 @@ package com.bugra.service;
 
 import com.bugra.dto.LoginUser;
 import com.bugra.dto.RegisterUser;
-import com.bugra.dto.UserResponse;
 import com.bugra.exceptions.UserExistException;
 import com.bugra.exceptions.UserNotFoundException;
-import com.bugra.mapper.UserResponseMapper;
 import com.bugra.model.User;
 import com.bugra.repo.UserRepo;
 import com.bugra.shared.AuthMessages;
@@ -16,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserService {
@@ -31,6 +30,7 @@ public class UserService {
         this.jwtService = jwtService;
     }
 
+    @Transactional
     public User register(RegisterUser newUser){
         userRepo.findByEmail(newUser.email())
                 .ifPresent(u-> {
@@ -45,6 +45,7 @@ public class UserService {
        return user;
     }
 
+    @Transactional
     public User login(@Valid LoginUser loginUser) {
         User user = userRepo.findByEmail(loginUser.email())
                 .orElseThrow(() -> new UserNotFoundException(AuthMessages.INVALID_CREDENTIALS));

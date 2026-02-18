@@ -1,6 +1,5 @@
 package com.bugra.security;
 
-import com.bugra.dto.UserResponse;
 import com.bugra.exceptions.JwtException;
 import com.bugra.security.dto.TokenPayload;
 import io.jsonwebtoken.Claims;
@@ -8,7 +7,6 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

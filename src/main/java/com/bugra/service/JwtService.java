@@ -44,7 +44,8 @@ public class JwtService {
 
     public void refreshToken(User user,HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = cookieService.extractTokenFromCookies(refresh_token.toString(), request);
-        TokensRefreshed tokens = refreshTokenService.refreshTokens(refreshToken,user);
+        refreshTokenService.removeRefreshToken(refreshToken);
+        TokensRefreshed tokens = refreshTokenService.refreshTokens(user);
         setJwtCookies(tokens.access_token(), tokens.refresh_token(), response);
     }
 
