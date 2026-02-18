@@ -1,5 +1,6 @@
 package com.bugra.config;
 
+import com.bugra.filter.LoginRateLimiter;
 import com.bugra.security.JwtEntryPoint;
 import com.bugra.security.JwtErrorFilter;
 import com.bugra.security.JwtFilter;
@@ -34,11 +35,13 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final JwtEntryPoint jwtEntryPoint;
     private final JwtErrorFilter jwtErrorFilter;
+    private final LoginRateLimiter loginRateLimiter;
 
-    public SecurityConfig(JwtFilter jwtFilter, JwtEntryPoint jwtEntryPoint, JwtErrorFilter jwtErrorFilter) {
+    public SecurityConfig(JwtFilter jwtFilter, JwtEntryPoint jwtEntryPoint, JwtErrorFilter jwtErrorFilter, LoginRateLimiter loginRateLimiter) {
         this.jwtFilter = jwtFilter;
         this.jwtEntryPoint = jwtEntryPoint;
         this.jwtErrorFilter = jwtErrorFilter;
+        this.loginRateLimiter = loginRateLimiter;
     }
 
     @Bean
@@ -73,8 +76,9 @@ public class SecurityConfig {
                                 .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtEntryPoint))
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterAfter(jwtErrorFilter, JwtFilter.class)
+                    .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(loginRateLimiter, jwtFilter.getClass())
+                    .addFilterAfter(jwtErrorFilter, JwtFilter.class)
                 .build();
     }
 
