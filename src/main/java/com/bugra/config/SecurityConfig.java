@@ -1,7 +1,7 @@
 package com.bugra.config;
 
 import com.bugra.enums.EndPoints;
-import com.bugra.filter.LoginRateLimiter;
+import com.bugra.filter.ratelimiter.LoginRateLimiter;
 import com.bugra.security.JwtEntryPoint;
 import com.bugra.security.JwtErrorFilter;
 import com.bugra.security.JwtFilter;
