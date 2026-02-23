@@ -35,7 +35,7 @@ public class LoginRateLimiter extends OncePerRequestFilter {
     {
 
         if(request.getRequestURI().startsWith(EndPoints.LOGIN.getPath())){
-            String ip = request.getRemoteAddr();
+            String ip = extractUserIp(request);
 
             RequestInfo requestInfo = requestMap.computeIfAbsent(ip, k ->
                   new RequestInfo(
@@ -78,4 +78,17 @@ public class LoginRateLimiter extends OncePerRequestFilter {
         filterChain.doFilter(request,response);
     }
 
+
+    private String extractUserIp(HttpServletRequest request){
+        String header = request.getHeader("X-Forwarded-For");
+        if(header != null && !header.isEmpty() && isFromTrustedProxy(request)){
+            return header.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
+    }
+
+    private boolean isFromTrustedProxy(HttpServletRequest request){
+        String remote = request.getRemoteAddr();
+        return remote.startsWith("10.") || remote.startsWith("192.168.");
+    }
 }
