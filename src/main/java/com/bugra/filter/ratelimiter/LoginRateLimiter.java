@@ -1,4 +1,4 @@
-package com.bugra.filter;
+package com.bugra.filter.ratelimiter;
 
 import com.bugra.dto.ResponsePattern;
 import com.bugra.enums.EndPoints;

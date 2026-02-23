@@ -1,4 +1,4 @@
-package com.bugra.filter;
+package com.bugra.filter.ratelimiter;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
