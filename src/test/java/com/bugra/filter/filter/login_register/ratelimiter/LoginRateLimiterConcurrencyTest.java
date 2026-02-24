@@ -1,6 +1,6 @@
 package com.bugra.filter.filter.login_register.ratelimiter;
 
-import com.bugra.filter.helper.rate_limiter.LoginRateLimiterTestHelper;
+import com.bugra.support.concurrency.LoginRateLimiterTestHelper;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

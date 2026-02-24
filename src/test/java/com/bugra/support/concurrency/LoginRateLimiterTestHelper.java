@@ -1,6 +1,5 @@
-package com.bugra.support;
+package com.bugra.support.concurrency;
 
-import com.bugra.filter.ratelimiter.LoginRateLimiter;
 import com.bugra.filter.ratelimiter.RequestInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
