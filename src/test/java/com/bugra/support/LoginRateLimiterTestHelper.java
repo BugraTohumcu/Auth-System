@@ -1,4 +1,4 @@
-package com.bugra.filter.helper.rate_limiter;
+package com.bugra.support;
 
 import com.bugra.filter.ratelimiter.LoginRateLimiter;
 import com.bugra.filter.ratelimiter.RequestInfo;
@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class LoginRateLimiterTestHelper {
 
-    private final Logger logger = LoggerFactory.getLogger(LoginRateLimiter.class);
+    private final Logger logger = LoggerFactory.getLogger(LoginRateLimiterTestHelper.class);
     private final int MAX_REQUEST = 5;
     private final long WINDOW_SIZE = Duration.ofSeconds(20).toMillis();
     private final Map<String, RequestInfo> requestMap = new ConcurrentHashMap<>();
