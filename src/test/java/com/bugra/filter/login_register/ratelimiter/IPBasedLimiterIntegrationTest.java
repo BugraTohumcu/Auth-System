@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class LoginRateLimiterIntegrationTest{
+class IPBasedLimiterIntegrationTest {
 
     private final int LIMIT = 5;
     private final long WINDOW_SIZE  = Duration.ofSeconds(20).toMillis();

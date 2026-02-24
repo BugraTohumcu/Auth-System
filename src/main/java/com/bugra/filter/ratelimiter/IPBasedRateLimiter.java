@@ -23,9 +23,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class LoginRateLimiter extends OncePerRequestFilter {
+public class IPBasedRateLimiter extends OncePerRequestFilter {
 
-    private final Logger logger = LoggerFactory.getLogger(LoginRateLimiter.class);
+    private final Logger logger = LoggerFactory.getLogger(IPBasedRateLimiter.class);
     private final int MAX_REQUEST = 5;
     private final long WINDOW_SIZE = Duration.ofSeconds(120).toMillis();
 

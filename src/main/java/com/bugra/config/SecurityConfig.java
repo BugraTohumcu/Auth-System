@@ -1,7 +1,7 @@
 package com.bugra.config;
 
 import com.bugra.enums.EndPoints;
-import com.bugra.filter.ratelimiter.LoginRateLimiter;
+import com.bugra.filter.ratelimiter.IPBasedRateLimiter;
 import com.bugra.security.JwtEntryPoint;
 import com.bugra.security.JwtErrorFilter;
 import com.bugra.security.JwtFilter;
@@ -36,9 +36,9 @@ public class SecurityConfig {
     private final JwtFilter jwtFilter;
     private final JwtEntryPoint jwtEntryPoint;
     private final JwtErrorFilter jwtErrorFilter;
-    private final LoginRateLimiter loginRateLimiter;
+    private final IPBasedRateLimiter loginRateLimiter;
 
-    public SecurityConfig(JwtFilter jwtFilter, JwtEntryPoint jwtEntryPoint, JwtErrorFilter jwtErrorFilter, LoginRateLimiter loginRateLimiter) {
+    public SecurityConfig(JwtFilter jwtFilter, JwtEntryPoint jwtEntryPoint, JwtErrorFilter jwtErrorFilter, IPBasedRateLimiter loginRateLimiter) {
         this.jwtFilter = jwtFilter;
         this.jwtEntryPoint = jwtEntryPoint;
         this.jwtErrorFilter = jwtErrorFilter;
