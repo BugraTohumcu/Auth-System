@@ -24,7 +24,7 @@ public class LoginRateLimiter extends OncePerRequestFilter {
 
     private final Logger logger = LoggerFactory.getLogger(LoginRateLimiter.class);
     private final int MAX_REQUEST = 5;
-    private final long WINDOW_SIZE = Duration.ofSeconds(20).toMillis();
+    private final long WINDOW_SIZE = Duration.ofSeconds(120).toMillis();
 
     private final Map<String, RequestInfo> requestMap = new ConcurrentHashMap<>();
 
@@ -70,14 +70,10 @@ public class LoginRateLimiter extends OncePerRequestFilter {
                     response.getWriter().write(mapper.writeValueAsString(res));
                     return;
                 }
-
             }
-
         }
-
         filterChain.doFilter(request,response);
     }
-
 
     private String extractUserIp(HttpServletRequest request){
         String header = request.getHeader("X-Forwarded-For");
@@ -89,6 +85,6 @@ public class LoginRateLimiter extends OncePerRequestFilter {
 
     private boolean isFromTrustedProxy(HttpServletRequest request){
         String remote = request.getRemoteAddr();
-        return remote.startsWith("10.") || remote.startsWith("192.168.");
+        return remote.startsWith("10.") || remote.startsWith("192.168.") || remote.startsWith("127.0");
     }
 }
