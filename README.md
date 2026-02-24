@@ -14,7 +14,8 @@ A lightweight and secure authentication system built with Spring Boot, implement
 - Clean and consistent API responses with standardized error handling  
 - Modular architecture with Controller → Service → Facade layers  
 - Secure password hashing using **Argon2**  
-- Global exception handling for consistent error responses  
+- Global exception handling for consistent error responses 
+- IP-based rate limiting for authentication endpoints (login, register, refresh_token)
 
 ---
 
