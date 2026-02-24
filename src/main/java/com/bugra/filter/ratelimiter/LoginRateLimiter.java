@@ -7,6 +7,9 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -87,4 +90,12 @@ public class LoginRateLimiter extends OncePerRequestFilter {
         String remote = request.getRemoteAddr();
         return remote.startsWith("10.") || remote.startsWith("192.168.") || remote.startsWith("127.0");
     }
+}
+
+@Getter
+@Setter
+@AllArgsConstructor
+class RequestInfo {
+    private long windowStart;
+    private AtomicInteger count;
 }
