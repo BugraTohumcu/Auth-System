@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.AdditionalMatchers.not;
+import static org.hamcrest.Matchers.not;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -35,17 +35,10 @@ public class LoginRateLimiterConcurrencyTest {
     void filterConcurrencyTest() throws Exception {
 
         String spammer_ip = "192.168.1.1";
-        String regular_ip = "192.168.1" + UUID.randomUUID();
         String spammerUser = """
                 {
                     "password":"Abc123",
                     "email":"necmiK@g.com"
-                }
-                """;
-        String regularUser = """
-                {
-                    "password":"Abc123",
-                    "email":"ismetK@g.com"
                 }
                 """;
 
@@ -54,7 +47,6 @@ public class LoginRateLimiterConcurrencyTest {
 
         CountDownLatch startLatch = new CountDownLatch(1);
         CountDownLatch endLatch = new CountDownLatch(threadSize);
-
         AtomicInteger requestCounter = new AtomicInteger(0);
 
         for(int i = 0; i< threadSize; i++){
@@ -85,18 +77,46 @@ public class LoginRateLimiterConcurrencyTest {
 
         //Wait for all threads to finish
         endLatch.await();
+        assertEquals(5,requestCounter.get(), "Only " + LIMIT + " should pass the rate limiter");
+    }
 
-        /**
-         * This post request should be called without triggering the rate limiter
-         * This tests that different ip addresses dos not affect each other
-         * */
+    @Test
+    void shouldNotBlockDifferentIP() throws Exception {
+        String spammer_ip = "192.168.1.1";
+        String regular_ip = "192.168.1" + UUID.randomUUID();
+        String spammerUser = """
+                {
+                    "password":"Abc123",
+                    "email":"necmiK@g.com"
+                }
+                """;
+        String regularUser = """
+                {
+                    "password":"Abc123",
+                    "email":"ismetK@g.com"
+                }
+                """;
+
+        for(int i = 0; i < 5; i++){
+            mvc.perform(post(EndPoints.LOGIN.getPath())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(spammerUser)
+                    .header("X-Forwarded-For", spammer_ip))
+                    .andExpect(status().is(not(429)));
+        }
+
+        //Trigger rate limiter
+        mvc.perform(post(EndPoints.LOGIN.getPath())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(spammerUser)
+                        .header("X-Forwarded-For", spammer_ip))
+                .andExpect(status().isTooManyRequests());
+
+        //Try With Different ip address
         mvc.perform(post(EndPoints.LOGIN.getPath())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(regularUser)
                         .header("X-Forwarded-For", regular_ip))
-                .andExpect(status().isOk());
-
-
-        assertEquals(5,requestCounter.get(), "Only " + LIMIT + " should pass the rate limiter");
+                .andExpect(status().is(not(429)));
     }
 }
