@@ -37,7 +37,9 @@ public class LoginRateLimiter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException
     {
 
-        if(request.getRequestURI().startsWith(EndPoints.LOGIN.getPath())){
+        if(request.getRequestURI().startsWith(EndPoints.LOGIN.getPath()) ||
+           request.getRequestURI().startsWith(EndPoints.REGISTER.getPath()) ||
+           request.getRequestURI().startsWith(EndPoints.REFRESH.getPath())) {
             String ip = extractUserIp(request);
 
             RequestInfo requestInfo = requestMap.computeIfAbsent(ip, k ->

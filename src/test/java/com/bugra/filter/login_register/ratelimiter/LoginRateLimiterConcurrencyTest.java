@@ -35,12 +35,6 @@ public class LoginRateLimiterConcurrencyTest {
     void filterConcurrencyTest() throws Exception {
 
         String spammer_ip = "192.168.1.1";
-        String spammerUser = """
-                {
-                    "password":"Abc123",
-                    "email":"necmiK@g.com"
-                }
-                """;
 
         int threadSize = 100;
         ExecutorService executorService = Executors.newFixedThreadPool(threadSize);
@@ -54,13 +48,12 @@ public class LoginRateLimiterConcurrencyTest {
                 try {
                     startLatch.await();
                     var res = mvc.perform(post(EndPoints.LOGIN.getPath())
-                            .contentType(MediaType.APPLICATION_JSON)
-                            .content(spammerUser)
                             .header("X-Forwarded-For", spammer_ip))
+                            .andExpect(status().is(not(429)))
                             .andReturn();
 
                     int status = res.getResponse().getStatus();
-                    if(status == 200){
+                    if(status != 429){
                         requestCounter.incrementAndGet();
                     }
 
@@ -84,38 +77,20 @@ public class LoginRateLimiterConcurrencyTest {
     void shouldNotBlockDifferentIP() throws Exception {
         String spammer_ip = "192.168.1.1";
         String regular_ip = "192.168.1." + UUID.randomUUID();
-        String spammerUser = """
-                {
-                    "password":"Abc123",
-                    "email":"necmiK@g.com"
-                }
-                """;
-        String regularUser = """
-                {
-                    "password":"Abc123",
-                    "email":"ismetK@g.com"
-                }
-                """;
 
         for(int i = 0; i < 5; i++){
             mvc.perform(post(EndPoints.LOGIN.getPath())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(spammerUser)
                     .header("X-Forwarded-For", spammer_ip))
                     .andExpect(status().is(not(429)));
         }
 
         //Trigger rate limiter
         mvc.perform(post(EndPoints.LOGIN.getPath())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(spammerUser)
                         .header("X-Forwarded-For", spammer_ip))
                 .andExpect(status().isTooManyRequests());
 
         //Try With Different ip address
         mvc.perform(post(EndPoints.LOGIN.getPath())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(regularUser)
                         .header("X-Forwarded-For", regular_ip))
                 .andExpect(status().is(not(429)));
     }

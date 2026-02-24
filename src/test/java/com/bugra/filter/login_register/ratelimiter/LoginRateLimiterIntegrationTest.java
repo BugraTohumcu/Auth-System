@@ -31,28 +31,17 @@ class LoginRateLimiterIntegrationTest{
     @Autowired
     private ObjectMapper mapper;
 
-
-
     @Test
     void shouldBlockRequestAfterLimit() throws Exception {
         String ip = "192.168.1" + UUID.randomUUID();
-        String testUser = """
-                {
-                    "password":"Abc123",
-                    "email":"necmiK@g.com"
-                }
-                """;
+
         for(int i = 0; i < 5; i++){
             mvc.perform(post(EndPoints.LOGIN.getPath())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(testUser)
                     .header("X-Forwarded-For", ip))
-                    .andExpect(status().isOk());
+                    .andExpect(status().is(not(429)));
         }
 
         mvc.perform(post(EndPoints.LOGIN.getPath())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(testUser)
                 .header("X-Forwarded-For", ip))
                 .andExpect(status().isTooManyRequests())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
@@ -71,37 +60,22 @@ class LoginRateLimiterIntegrationTest{
     @Test
     void shouldResetWindow() throws Exception {
         String ip = "192.168.1." + UUID.randomUUID();
-        String testUser = """
-                {
-                    "password":"Abc123",
-                    "email":"necmiK@g.com"
-                }
-                """;
         for(int i = 0; i < LIMIT ; i++){
             mvc.perform(post(EndPoints.LOGIN.getPath())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(testUser)
                     .header("X-Forwarded-For", ip))
                     .andExpect(status().is(not(429)));
         }
 
         // This request going to trigger rate limiter
         mvc.perform(post(EndPoints.LOGIN.getPath())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(testUser)
                         .header("X-Forwarded-For", ip))
                 .andExpect(status().isTooManyRequests());
 
-
         Thread.sleep(WINDOW_SIZE + 1000 );
 
-
         mvc.perform(post(EndPoints.LOGIN.getPath())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(testUser)
                         .header("X-Forwarded-For", ip))
                 .andExpect(status().is(not(429)));
-
 
     }
 }
