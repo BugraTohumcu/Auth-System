@@ -1,4 +1,4 @@
-package com.bugra.filter.filter.login_register.ratelimiter;
+package com.bugra.filter.login_register.ratelimiter;
 
 import com.bugra.dto.ResponsePattern;
 import com.bugra.enums.EndPoints;
