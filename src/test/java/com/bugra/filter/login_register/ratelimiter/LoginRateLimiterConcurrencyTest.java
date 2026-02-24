@@ -83,7 +83,7 @@ public class LoginRateLimiterConcurrencyTest {
     @Test
     void shouldNotBlockDifferentIP() throws Exception {
         String spammer_ip = "192.168.1.1";
-        String regular_ip = "192.168.1" + UUID.randomUUID();
+        String regular_ip = "192.168.1." + UUID.randomUUID();
         String spammerUser = """
                 {
                     "password":"Abc123",
