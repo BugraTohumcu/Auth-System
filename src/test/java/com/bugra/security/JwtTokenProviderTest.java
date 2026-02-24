@@ -15,15 +15,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class JwtTokenProviderTest {
 
-    private String fakeSecret = TestConstants.fake_secret;
+    private final String fakeSecret;
+    private final JwtTokenProvider tokenProvider;
+
+    JwtTokenProviderTest(){
+        fakeSecret = TestConstants.fake_secret;
+        tokenProvider = new JwtTokenProvider();
+        ReflectionTestUtils.setField(tokenProvider, "secret",
+                fakeSecret);
+    }
 
     @Test
     void isTokenExpired() {
-
-        JwtTokenProvider tokenProvider = new JwtTokenProvider();
-
-        ReflectionTestUtils.setField(tokenProvider, "secret",
-                fakeSecret);
 
         TokenPayload mockPayload = TokenPayload.builder()
                 .id("1312")
