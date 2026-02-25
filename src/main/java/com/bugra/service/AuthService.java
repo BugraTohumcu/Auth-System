@@ -21,8 +21,8 @@ public class AuthService {
 
     public void refreshToken(User user, HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = cookieService.extractTokenFromCookies(refresh_token.toString(), request);
-        refreshTokenService.removeRefreshToken(refreshToken);
-        TokensRefreshed tokens = refreshTokenService.refreshTokens(user);
+        refreshTokenService.revoke(refreshToken);
+        TokensRefreshed tokens = refreshTokenService.refreshTokens(refreshToken ,user);
         cookieService.setJwtCookies(tokens.access_token(), tokens.refresh_token(), response);
     }
 }
