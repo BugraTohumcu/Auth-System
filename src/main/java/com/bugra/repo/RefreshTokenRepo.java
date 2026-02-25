@@ -13,15 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public interface RefreshTokenRepo extends JpaRepository<RefreshToken, String> {
 
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    RefreshToken findByJti(String jti);
-
     @Modifying
-    @Query("Delete from RefreshToken r where  r.jti = :jti")
-    int deleteByJti(@Param("jti") String jti);
+    @Query("Update RefreshToken t set t.revoked = true where t.jti = :jti and  t.revoked = false")
+    int revokeTokenByJti(@Param("jti") String jti);
 
-    @Modifying
-    @Transactional
-    @Query("Delete from RefreshToken r where r.expires <= :now")
-    int deleteByExpires(@Param("now") long now);
+
+    @Query("Select t.revoked from RefreshToken t where t.jti = :jti")
+    boolean isTokenRevoked(@Param("jti") String jti);
 }
