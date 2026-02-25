@@ -22,12 +22,12 @@ public class UserService {
     private final Logger logger = LoggerFactory.getLogger(UserService.class);
     private final UserRepo userRepo;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;
+    private final CookieService cookieService;
 
-    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public UserService(UserRepo userRepo, PasswordEncoder passwordEncoder, CookieService jwtService) {
         this.userRepo = userRepo;
         this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
+        this.cookieService = jwtService;
     }
 
     @Transactional
@@ -57,7 +57,7 @@ public class UserService {
     }
 
     public User getUser(HttpServletRequest request) {
-        String userId = jwtService.getUserIdFromCookieService(request);
+        String userId = cookieService.getUserIdFromCookies(request);
         return userRepo.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException(AuthMessages.USER_NOT_FOUND));
     }
