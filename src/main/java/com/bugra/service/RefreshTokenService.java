@@ -7,6 +7,7 @@ import com.bugra.security.JwtTokenProvider;
 import com.bugra.security.dto.TokenPayload;
 import com.bugra.security.dto.TokensRefreshed;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,10 +19,12 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepo refreshTokenRepo;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PasswordEncoder encoder;
 
-    public RefreshTokenService(RefreshTokenRepo refreshTokenRepo, JwtTokenProvider jwtTokenProvider, ResourceLoader resourceLoader) {
+    public RefreshTokenService(RefreshTokenRepo refreshTokenRepo, JwtTokenProvider jwtTokenProvider, ResourceLoader resourceLoader, PasswordEncoder encoder) {
         this.refreshTokenRepo = refreshTokenRepo;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.encoder = encoder;
     }
 
     @Transactional()
@@ -29,7 +32,8 @@ public class RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken();
         Instant expiresAt = Instant.now().plus(7, ChronoUnit.DAYS);
 
-        refreshToken.setJti(jwtTokenProvider.extractJti(token));
+
+        refreshToken.setJti(encoder.encode(jwtTokenProvider.extractJti(token)));
         refreshToken.setExpires(expiresAt);
         refreshToken.setUser(user);
         refreshTokenRepo.save(refreshToken);
@@ -38,7 +42,7 @@ public class RefreshTokenService {
     @Transactional()
     public void removeRefreshToken(String refreshToken) {
         String jti = jwtTokenProvider.extractJti(refreshToken);
-        int modified = refreshTokenRepo.deleteByJti(jti);
+        int modified = refreshTokenRepo.deleteByJti(encoder.encode(jti));
         if(modified == 0) {
             throw  new RuntimeException("Refresh token not found");
         }
@@ -53,5 +57,9 @@ public class RefreshTokenService {
         TokensRefreshed tokens = new TokensRefreshed(newAccessToken, newRefreshToken);
         save(newRefreshToken,user);
         return tokens;
+    }
+
+    public RefreshToken findRefreshtokenByJti(String jti){
+        return refreshTokenRepo.findByJti(encoder.encode(jti));
     }
 }
