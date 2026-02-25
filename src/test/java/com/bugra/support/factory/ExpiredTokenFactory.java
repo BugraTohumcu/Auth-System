@@ -13,7 +13,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 
-public class ExpiredTokenFactory {
+public class TokenFactory {
 
     private static final String fakeSecret  = TestConstants.fake_secret;
 

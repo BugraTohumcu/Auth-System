@@ -21,6 +21,9 @@ public class RefreshToken {
     private String jti;
 
     @Column(nullable = false)
+    private boolean revoked = false;
+
+    @Column(nullable = false)
     private Instant expires;
 
     @ManyToOne(fetch = FetchType.LAZY)
