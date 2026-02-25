@@ -7,7 +7,7 @@ import com.bugra.dto.UserResponse;
 import com.bugra.facade.AuthFacade;
 import com.bugra.mapper.UserResponseMapper;
 import com.bugra.model.User;
-import com.bugra.service.JwtService;
+import com.bugra.service.AuthService;
 import com.bugra.service.UserService;
 import com.bugra.shared.AuthMessages;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,12 +25,12 @@ public class AuthController {
     private final Logger logger = LoggerFactory.getLogger(AuthController.class);
     private final UserService userService;
     private final AuthFacade authFacade;
-    private final JwtService jwtService;
+    private final AuthService authService;
 
-    public AuthController(UserService userService, AuthFacade authFacade, JwtService jwtService) {
+    public AuthController(UserService userService, AuthFacade authFacade, AuthService authService) {
         this.userService = userService;
         this.authFacade = authFacade;
-        this.jwtService = jwtService;
+        this.authService = authService;
     }
 
     @PostMapping("/login")
@@ -74,7 +74,7 @@ public class AuthController {
     public ResponseEntity<ResponsePattern<String>>
     refreshToken(HttpServletRequest request,HttpServletResponse response) {
         User user = userService.getUser(request);
-        jwtService.refreshToken(user,request,response);
+        authService.refreshToken(user,request,response);
         return ResponseEntity.ok(new ResponsePattern<>("Tokens Refreshed",null,true));
     }
 }
