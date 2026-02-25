@@ -1,6 +1,7 @@
 package com.bugra.security;
 
 import com.bugra.enums.EndPoints;
+import com.bugra.service.CookieService;
 import com.bugra.service.JwtService;
 import com.bugra.service.UserDetailsServiceImp;
 import com.bugra.enums.Token;
@@ -25,10 +26,12 @@ public class JwtFilter extends OncePerRequestFilter {
     private final Logger logger = LoggerFactory.getLogger(JwtFilter.class);
     private final UserDetailsServiceImp userDetailsServiceImp;
     private final JwtService jwtService;
+    private final CookieService cookieService;
 
-    public JwtFilter(UserDetailsServiceImp userDetailsServiceImp, JwtService jwtService) {
+    public JwtFilter(UserDetailsServiceImp userDetailsServiceImp, JwtService jwtService, CookieService cookieService) {
         this.userDetailsServiceImp = userDetailsServiceImp;
         this.jwtService = jwtService;
+        this.cookieService = cookieService;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 return;
             }
 
-            String accessToken = jwtService.getTokenFromCookie(Token.access_token.toString(), request);
+            String accessToken = cookieService.extractTokenFromCookies(Token.access_token.toString(), request);
             String email = jwtService.getUserMailFromToken(accessToken);
 
             if(StringUtils.hasText(email) && SecurityContextHolder.getContext().getAuthentication() == null){
