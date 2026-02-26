@@ -8,7 +8,6 @@ import com.bugra.repo.RefreshTokenRepo;
 import com.bugra.security.JwtTokenProvider;
 import com.bugra.security.dto.TokenPayload;
 import com.bugra.security.dto.TokensRefreshed;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,12 +19,10 @@ public class RefreshTokenService {
 
     private final RefreshTokenRepo refreshTokenRepo;
     private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder encoder;
 
-    public RefreshTokenService(RefreshTokenRepo refreshTokenRepo, JwtTokenProvider jwtTokenProvider, PasswordEncoder encoder) {
+    public RefreshTokenService(RefreshTokenRepo refreshTokenRepo, JwtTokenProvider jwtTokenProvider) {
         this.refreshTokenRepo = refreshTokenRepo;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.encoder = encoder;
     }
 
     @Transactional()
@@ -33,7 +30,7 @@ public class RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken();
         Instant expiresAt = Instant.now().plus(7, ChronoUnit.DAYS);
 
-        refreshToken.setJti(encoder.encode(jwtTokenProvider.extractJti(token)));
+        refreshToken.setJti(jwtTokenProvider.extractJti(token));
         refreshToken.setExpires(expiresAt);
         refreshToken.setUser(user);
         refreshTokenRepo.save(refreshToken);
@@ -42,7 +39,7 @@ public class RefreshTokenService {
     @Transactional()
     public void revoke(String refreshToken) {
         String jti = jwtTokenProvider.extractJti(refreshToken);
-        int modified = refreshTokenRepo.revokeTokenByJti(encoder.encode(jti));
+        int modified = refreshTokenRepo.revokeTokenByJti(jti);
         if(modified == 0) {
             throw  new TokenNotFoundException("Refresh token not found");
         }
@@ -51,7 +48,7 @@ public class RefreshTokenService {
     @Transactional()
     public TokensRefreshed refreshTokens(String refreshToken, User user) {
         String jti = jwtTokenProvider.extractJti(refreshToken);
-        if(refreshTokenRepo.isTokenRevoked(encoder.encode(jti))){
+        if(!refreshTokenRepo.isTokenRevoked(jti)){
             throw new TokenRevokedException("Refresh token already revoked");
         }
 
