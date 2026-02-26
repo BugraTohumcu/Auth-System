@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ResponsePattern<UserResponse>> handleException(Exception e){
         logger.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ResponsePattern<>(e.getMessage(),null,false));
+                .body(new ResponsePattern<>("Something went wrong",null,false));
     }
 
     @ExceptionHandler(JwtException.class)
