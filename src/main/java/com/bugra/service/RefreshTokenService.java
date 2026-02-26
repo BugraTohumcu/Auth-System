@@ -41,7 +41,7 @@ public class RefreshTokenService {
         String jti = jwtTokenProvider.extractJti(refreshToken);
         int modified = refreshTokenRepo.revokeTokenByJti(jti);
         if(modified == 0) {
-            throw  new TokenNotFoundException("Refresh token not found");
+            throw  new TokenNotFoundException("Refresh token not found or already revoked");
         }
     }
 
