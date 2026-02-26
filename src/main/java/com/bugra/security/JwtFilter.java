@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -27,6 +28,12 @@ public class JwtFilter extends OncePerRequestFilter {
     private final UserDetailsServiceImp userDetailsServiceImp;
     private final JwtService jwtService;
     private final CookieService cookieService;
+
+    private final List<String> WHITELIST = List.of(
+            EndPoints.LOGIN.getPath(),
+            EndPoints.REGISTER.getPath(),
+            EndPoints.REFRESH.getPath()
+    );
 
     public JwtFilter(UserDetailsServiceImp userDetailsServiceImp, JwtService jwtService, CookieService cookieService) {
         this.userDetailsServiceImp = userDetailsServiceImp;
@@ -38,7 +45,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
             String path = request.getRequestURI();
-            if(path.startsWith(EndPoints.LOGIN.getPath()) || path.startsWith(EndPoints.REGISTER.getPath())){
+            if(WHITELIST.stream().anyMatch(path::startsWith)){
                 filterChain.doFilter(request,response);
                 return;
             }
@@ -63,7 +70,5 @@ public class JwtFilter extends OncePerRequestFilter {
             request.setAttribute("jwt_error", e.getMessage());
             filterChain.doFilter(request, response);
         }
-
-
     }
 }
